@@ -5,9 +5,13 @@ import org.apache.poi.xssf.usermodel.*;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.poi.hpsf.PropertySetFactory;
+import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.poifs.eventfilesystem.POIFSReader;
+import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.Color;
@@ -20,17 +24,23 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 
+
 public class test
 {
    public static void main(String args[])throws Exception
    { 
       File Answer = new File("answer.xlsx");
       File Assignment = new File("assignment_before.xlsx");
+      File Point = new File("answer_point.xlsx");
+  
       FileInputStream fIP_answer = new FileInputStream(Answer);
+      FileInputStream fIP_point = new FileInputStream(Point);
       FileInputStream fIP_assignment = new FileInputStream(Assignment);
+      
       //Get the workbook instance for XLSX file 
       XSSFWorkbook wbAnswer = new XSSFWorkbook(fIP_answer);
       XSSFWorkbook wbAssignment = new XSSFWorkbook(fIP_assignment);
+      XSSFWorkbook wbPoint = new XSSFWorkbook(fIP_point);
       FormulaEvaluator evaluator_answer = wbAnswer.getCreationHelper().createFormulaEvaluator();
       FormulaEvaluator evaluator_assignment = wbAssignment.getCreationHelper().createFormulaEvaluator();
 //      if(file.isFile() && file.exists())
@@ -44,8 +54,14 @@ public class test
       
       XSSFSheet spreadsheet_assignment = wbAssignment.getSheetAt(0);
       XSSFSheet spreadsheet_answer = wbAnswer.getSheetAt(0);
+      XSSFSheet spreadsheet_point = wbPoint.getSheetAt(0);
       Iterator < Row > rowIterator1 = spreadsheet_answer.iterator();
+      Iterator < Row > rowIterator3 = spreadsheet_point.iterator();
       HashMap<String, Cell> hsAnswer = new HashMap<String, Cell>();
+      HashMap<String, Cell> hsPoint = new HashMap<String, Cell>();
+      
+      Double total = 100.0;
+      
       while (rowIterator1.hasNext()) 
       {
          XSSFRow r = (XSSFRow) rowIterator1.next();
@@ -58,6 +74,20 @@ public class test
            
          }
       }
+      
+      while (rowIterator3.hasNext()) 
+      {
+         XSSFRow r = (XSSFRow) rowIterator3.next();
+         Iterator < Cell > cellIterator3 = r.cellIterator();
+         while ( cellIterator3.hasNext() ) 
+         {
+            Cell cell = cellIterator3.next();
+            String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
+            hsPoint.put(key, cell);
+         }
+      }     
+      
+      
       Iterator < Row > rowIterator2 = spreadsheet_assignment.iterator();
       while (rowIterator2.hasNext()) 
       {
@@ -103,6 +133,10 @@ public class test
         	 
         	 if (id == false){
         		 System.out.println(key);
+        		 String column = IntToLetters(cell.getColumnIndex());
+        		 String index = column + Integer.toString(cell.getRowIndex());
+        		 Double point = hsPoint.get(key).getNumericCellValue();
+        		 total = WriteStringToFile(index, point, total);
         		 XSSFCellStyle style = wbAssignment.createCellStyle();
         		 style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
         		 style.setFillForegroundColor(HSSFColor.RED.index);
@@ -111,24 +145,47 @@ public class test
 
         		 
         	 }
-//        	 if (!cell.equals(hsAnswer.get(key))) {
-//        		 System.out.println(key);
-//        		 XSSFCellStyle style = wbAssignment.createCellStyle();
-//        		 XSSFFont font = wbAssignment.createFont();
-//        		 font.setColor(HSSFColor.RED.index);
-//        		 style.setFont(font);
-//        		 cell.setCellStyle(style);
-//        		 FileOutputStream out = new FileOutputStream("assignment.xlsx");
-//        		 wbAssignment.write(out);
-//        	 }
+        	 
+        	 
+//        POIFSReader rd = new POIFSReader();
+//        rd.registerListener(new MyPOIFSReaderListener(),"\005SummaryInformation");
+//        rd.read(new FileInputStream(Assignment));
          }
       
       }
+      FileWriter fw = new FileWriter("report.txt",true); 
+	  fw.write("Your total point for this assignment is "+ total.toString());//appends the string to the file
+	  fw.close();
       FileOutputStream fileOut=new FileOutputStream("assignment_after.xlsx");
       wbAssignment.write(fileOut);
       fileOut.close();
    }
+
    
+   public static String IntToLetters(int value)
+   {
+       String result = new String();
+       while (--value >= 0)
+       {
+           result = (char)('A' + value % 26 ) + result;
+           value /= 26;
+       }
+       return result;
+   }
+   
+   public static Double WriteStringToFile(String cell, Double point, Double total) {  
+       try {    
+    	   FileWriter fw = new FileWriter("report.txt",true); 
+    	   fw.write("Cell "+ cell + " is wrong, " + point.toString() + "pt is deducted!\n");//appends the string to the file
+    	   fw.close();
+      
+       } catch (IOException ioe) {  
+    	   System.err.println("IOException: " + ioe.getMessage()); 
+       }  
+       
+       return total-point;
+   }  
+
 	   
 }
     

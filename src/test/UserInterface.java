@@ -31,11 +31,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import test.Test;
 
 
-public class ShortCutsEx extends JFrame {
+public class UserInterface extends JFrame {
 
 	private JPanel panel;
 	private JTextArea area;
-    public ShortCutsEx() {
+    public UserInterface() {
         
         initUI();
     }
@@ -62,8 +62,8 @@ public class ShortCutsEx extends JFrame {
         answerField.setPreferredSize(new Dimension(320, 20));
         final JTextField scoreField = new JTextField();
         scoreField.setPreferredSize(new Dimension(320, 20));
-        JTextField scoreset = new JTextField("Score Set, Example: A1:5, D10:10");
-        JTextField roundset = new JTextField("Rounding, Example: A1:0.01, D10:0.05");
+        final JTextField scoreset = new JTextField("Score Set, Example: A1:5, D10:10");
+        final JTextField roundset = new JTextField("Rounding, Example: A1:0.01, D10:0.05");
         JTextField result = new JTextField();
         panel.add(assignbtn, BorderLayout.WEST);
         panel.add(assignField);
@@ -76,17 +76,24 @@ public class ShortCutsEx extends JFrame {
         panel.add(runbtn, BorderLayout.WEST);
         result.setPreferredSize( new Dimension( 500, 500 ) );
         panel.add(result);
+        JScrollPane scroll = new JScrollPane (result, 
+        		   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        panel.add(scroll);
+        panel.setVisible (true);
         
         
         
         
         assignbtn.addActionListener(new ActionListener() {
-
+        	
         	@Override
         	public void actionPerformed(ActionEvent e) {
         		// TODO Auto-generated method stub
         		String path = null;
-    	        JFileChooser fileChooser = new JFileChooser();
+        		
+    	        JFileChooser fileChooser = new JFileChooser(".");
+
                 if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//用户点击了确定  
                     path = fileChooser.getSelectedFile().getAbsolutePath();//取得路径选择  
         		assignField.setText(path);
@@ -100,7 +107,7 @@ public class ShortCutsEx extends JFrame {
         	public void actionPerformed(ActionEvent e) {
         		// TODO Auto-generated method stub
         		String path = null;
-    	        JFileChooser fileChooser = new JFileChooser();
+    	        JFileChooser fileChooser = new JFileChooser(".");
                 if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//用户点击了确定  
                     path = fileChooser.getSelectedFile().getAbsolutePath();//取得路径选择  
         		answerField.setText(path);
@@ -114,7 +121,7 @@ public class ShortCutsEx extends JFrame {
         	public void actionPerformed(ActionEvent e) {
         		// TODO Auto-generated method stub
         		String path = null;
-    	        JFileChooser fileChooser = new JFileChooser();
+    	        JFileChooser fileChooser = new JFileChooser(".");
                 if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//用户点击了确定  
                     path = fileChooser.getSelectedFile().getAbsolutePath();//取得路径选择  
         		scoreField.setText(path);
@@ -129,15 +136,20 @@ public class ShortCutsEx extends JFrame {
         		String assignPath = assignField.getText();
         		String answerPath = answerField.getText();
         		String scorePath = answerField.getText();
+        		String scoreSet = scoreset.getText();
+        		String roundSet = roundset.getText();
         		
         		Test fly = new Test();
         		try {
-					fly.exec(assignPath, answerPath, scorePath);
+					fly.exec(assignPath, answerPath, scorePath, scoreSet, roundSet);
+					
 					
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+        		
+        		
         		
         		
         }
@@ -213,7 +225,7 @@ public class ShortCutsEx extends JFrame {
             content = new String(Files.readAllBytes(Paths.get(
                     file.getAbsolutePath())));
         } catch (IOException ex) {
-            Logger.getLogger(ShortCutsEx.class.getName()).log(
+            Logger.getLogger(UserInterface.class.getName()).log(
                     Level.SEVERE, null, ex);
         }
 
@@ -227,7 +239,7 @@ public class ShortCutsEx extends JFrame {
             @Override
             public void run() {
                 
-                ShortCutsEx ex = new ShortCutsEx();
+            	UserInterface ex = new UserInterface();
                 ex.setVisible(true);
             }
         });

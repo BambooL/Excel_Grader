@@ -19,7 +19,7 @@ public class SubmenuEx extends JFrame {
 
     private void initUI() {
 
-        createMenuBar();
+//        createMenuBar();
 
         setTitle("Submenu");
         setSize(360, 250);
@@ -27,55 +27,55 @@ public class SubmenuEx extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
-    private void createMenuBar() {
-        
-        JMenuBar menubar = new JMenuBar();
-        
-        ImageIcon iconNew = new ImageIcon("new.png");
-        ImageIcon iconOpen = new ImageIcon("open.png");
-        ImageIcon iconSave = new ImageIcon("save.png");
-        ImageIcon iconExit = new ImageIcon("exit.png");
-
-        JMenu fileMenu = new JMenu("File");
-
-        JMenu impMenu = new JMenu("Import");
-
-        JMenuItem assignfMi = new JMenuItem("Import Assignment...");
-        JMenuItem answermMi = new JMenuItem("Import Answer...");
-        JMenuItem scoreMi = new JMenuItem("Import Score...");
-
-        impMenu.add(assignMi);
-        impMenu.add(answerMi);
-        impMenu.add(scoreMi);
-
-        JMenuItem newMi = new JMenuItem("New", iconNew);
-        JMenuItem openMi = new JMenuItem("Open", iconOpen);
-        JMenuItem saveMi = new JMenuItem("Save", iconSave);
-        
-        
-
-        JMenuItem exitMi = new JMenuItem("Exit", iconExit);
-        exitMi.setToolTipText("Exit application");
-
-        exitMi.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                System.exit(0);
-            }
-        });
-
-        fileMenu.add(newMi);
-        fileMenu.add(openMi);
-        fileMenu.add(saveMi);
-        fileMenu.addSeparator();
-        fileMenu.add(impMenu);
-        fileMenu.addSeparator();
-        fileMenu.add(exitMi);
-
-        menubar.add(fileMenu);
-
-        setJMenuBar(menubar);        
-    }
+//    private void createMenuBar() {
+//        
+//        JMenuBar menubar = new JMenuBar();
+//        
+//        ImageIcon iconNew = new ImageIcon("new.png");
+//        ImageIcon iconOpen = new ImageIcon("open.png");
+//        ImageIcon iconSave = new ImageIcon("save.png");
+//        ImageIcon iconExit = new ImageIcon("exit.png");
+//
+//        JMenu fileMenu = new JMenu("File");
+//
+//        JMenu impMenu = new JMenu("Import");
+//
+//        JMenuItem assignfMi = new JMenuItem("Import Assignment...");
+//        JMenuItem answermMi = new JMenuItem("Import Answer...");
+//        JMenuItem scoreMi = new JMenuItem("Import Score...");
+//
+//        impMenu.add(assignMi);
+//        impMenu.add(answerMi);
+//        impMenu.add(scoreMi);
+//
+//        JMenuItem newMi = new JMenuItem("New", iconNew);
+//        JMenuItem openMi = new JMenuItem("Open", iconOpen);
+//        JMenuItem saveMi = new JMenuItem("Save", iconSave);
+//        
+//        
+//
+//        JMenuItem exitMi = new JMenuItem("Exit", iconExit);
+//        exitMi.setToolTipText("Exit application");
+//
+//        exitMi.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent event) {
+//                System.exit(0);
+//            }
+//        });
+//
+//        fileMenu.add(newMi);
+//        fileMenu.add(openMi);
+//        fileMenu.add(saveMi);
+//        fileMenu.addSeparator();
+//        fileMenu.add(impMenu);
+//        fileMenu.addSeparator();
+//        fileMenu.add(exitMi);
+//
+//        menubar.add(fileMenu);
+//
+//        setJMenuBar(menubar);        
+//    }
     
     public static void main(String[] args) {
         

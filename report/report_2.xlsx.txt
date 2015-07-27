@@ -1,0 +1,5 @@
+
+ Report for 2.xlsx
+
+  Cell D16 is wrong, 20.0pt is deducted!
+ Your total point for this assignment is 80.0

@@ -26,52 +26,28 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFColor;
-
+import test.Assignment;
 
 public class Test
 {
-   public void exec(String assignPath, String answerPath, String scorePath, String score, String rounding)throws Exception
+   private static final int CELL_TYPE_NUMERIC = 0;
+
+public void exec(String assignsPath, String answerPath, String scorePath, String score, String rounding)throws Exception
    { 
-	  
+	  File assignFolder = new File(assignsPath);
       File Answer = new File(answerPath);
-      File Assignment = new File(assignPath);
-      File Point = new File(scorePath);
-  
-      FileInputStream fIP_answer = new FileInputStream(Answer);
-      FileInputStream fIP_point = new FileInputStream(Point);
-      FileInputStream fIP_assignment = new FileInputStream(Assignment);
-      
+      FileInputStream fIP_answer = new FileInputStream(Answer);      
       //Get the workbook instance for XLSX file 
-      XSSFWorkbook wbAnswer = new XSSFWorkbook(fIP_answer);
-      XSSFWorkbook wbAssignment = new XSSFWorkbook(fIP_assignment);
-      XSSFWorkbook wbPoint = new XSSFWorkbook(fIP_point);
-      FormulaEvaluator evaluator_answer = wbAnswer.getCreationHelper().createFormulaEvaluator();
-      FormulaEvaluator evaluator_assignment = wbAssignment.getCreationHelper().createFormulaEvaluator();
-      
-//      if(file.isFile() && file.exists())
-//      {
-//         System.out.println("openworkbook.xlsx file open successfully.");
-//      }
-//      else
-//      {
-//         System.out.println("Error to open openworkbook.xlsx file.");
-//      }
-      
-      
+      XSSFWorkbook wbAnswer = new XSSFWorkbook(fIP_answer);    
+      FormulaEvaluator evaluator_answer = wbAnswer.getCreationHelper().createFormulaEvaluator(); 
+      File[] files = assignFolder.listFiles();
+      XSSFSheet spreadsheet_answer = wbAnswer.getSheetAt(0);
+      Iterator < Row > rowIterator1 = spreadsheet_answer.iterator();
+      HashMap<String, Cell> hsAnswer = new HashMap<String, Cell>();
+      HashMap<String, Double> hsPoint = new HashMap<String, Double>();
+      HashMap<String, Double> hsRound = new HashMap<String, Double>();
       String checkcell;
       Double round;
-      
-      XSSFSheet spreadsheet_assignment = wbAssignment.getSheetAt(0);
-      XSSFSheet spreadsheet_answer = wbAnswer.getSheetAt(0);
-      XSSFSheet spreadsheet_point = wbPoint.getSheetAt(0);
-      Iterator < Row > rowIterator1 = spreadsheet_answer.iterator();
-      Iterator < Row > rowIterator3 = spreadsheet_point.iterator();
-      HashMap<String, Cell> hsAnswer = new HashMap<String, Cell>();
-      HashMap<String, Cell> hsPoint = new HashMap<String, Cell>();
-      HashMap<String, Double> hsRound = new HashMap<String, Double>();
-      
-      Double total = 100.0;
-      
       // create hashmap for round
       
       String[] rounds = rounding.trim().split(",");
@@ -85,12 +61,13 @@ public class Test
 	    	  hsRound.put(key, value);
 	    	  i++;
 	      } 
-	  }  catch(ArrayIndexOutOfBoundsException ex) {
+	  }  
+      catch(ArrayIndexOutOfBoundsException ex) {
 	    	  JOptionPane.showMessageDialog(null, "Please Set the Round Following Examples!");
 	    	  return;
-	     }
+	  }
       
-      // create hashmap for answer
+   // create hashmap for answer
       while (rowIterator1.hasNext()) 
       {
          XSSFRow r = (XSSFRow) rowIterator1.next();
@@ -104,71 +81,64 @@ public class Test
          }
       }
       
-      // create hashmap for score
-      while (rowIterator3.hasNext()) 
-      {
-         XSSFRow r = (XSSFRow) rowIterator3.next();
-         Iterator < Cell > cellIterator3 = r.cellIterator();
-         while ( cellIterator3.hasNext() ) 
-         {
-            Cell cell = cellIterator3.next();
-            String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
-            hsPoint.put(key, cell);
-         }
-      }     
-      Double assignvalue = 0.0;
-      Double answervalue = 0.0;
-      // begin comparison
-      Iterator < Row > rowIterator2 = spreadsheet_assignment.iterator();
-      while (rowIterator2.hasNext()) 
-      {
-         XSSFRow r = (XSSFRow) rowIterator2.next();
-         Iterator < Cell > cellIterator2 = r.cellIterator();
-         while ( cellIterator2.hasNext()) 
-         {
-        	 Cell cell = cellIterator2.next();
-        	 if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-        		 continue;
-        	 }
-        	 String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
-        	 boolean id = false;
-        	 round = 0.001;
-        	 if (hsRound.get(key) != null) {
-        		 round = hsRound.get(key);
-        	 }
-        	 if (cell != null)  assignvalue = getVal(cell, wbAssignment );
-        	 
-        	 if (hsAnswer.get(key) != null)answervalue = getVal(hsAnswer.get(key), wbAnswer );
-        	 
-        	 id = correct(assignvalue, answervalue, round);
-        	 System.out.print(key+" ");
-        	 System.out.print(assignvalue+ " ");
-        	 System.out.print(round+ " ");
-    		 System.out.println(id);
-	      	 if (id == false){
-	
-	      		 String column = IntToLetters(cell.getColumnIndex());
-	      		 String index = column + Integer.toString(cell.getRowIndex()+1);
-	      		 Double point = hsPoint.get(key).getNumericCellValue();
-	      		 total = WriteStringToFile(index, point, total);
-	      		 XSSFCellStyle style = wbAssignment.createCellStyle();
-	      		 style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-	      		 style.setFillForegroundColor(HSSFColor.RED.index);
-	      		 style.setFillBackgroundColor(HSSFColor.RED.index);
-	      		 cell.setCellStyle(style);
-	      	 }
-
-         }
+      // create hashmap for point
+      if (!scorePath.trim().isEmpty()) {
+    	  System.out.println(scorePath);
+    	  File Point = new File(scorePath);
+    	  FileInputStream fIP_point = new FileInputStream(Point);
+    	  XSSFWorkbook wbPoint = new XSSFWorkbook(fIP_point);
+    	  XSSFSheet spreadsheet_point = wbPoint.getSheetAt(0);
+    	  Iterator < Row > rowIterator3 = spreadsheet_point.iterator();
+    	  while (rowIterator3.hasNext()) 
+          {
+             XSSFRow r = (XSSFRow) rowIterator3.next();
+             Iterator < Cell > cellIterator3 = r.cellIterator();
+             while ( cellIterator3.hasNext() ) 
+             {
+                Cell cell = cellIterator3.next();
+                String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
+                if (cell.getCellType() == CELL_TYPE_NUMERIC){
+                	hsPoint.put(key, cell.getNumericCellValue());
+                	System.out.print(key + " ");
+                	System.out.println(cell.getNumericCellValue());
+                }
+                
+             }
+          }     
+      } 
+      else if(!score.trim().isEmpty()){
+    	  String[] scores = score.trim().split(",");
+          
+          int j = 0;
+          try {
+    	      while (j < scores.length && scores[j] != ""  ) {
+    	    	  String[] item = scores[j].split(":");
+    	    	  String key = LetterToInt(item[0].trim());
+    	    	  Double value = Double.parseDouble(item[1]);
+    	    	  hsPoint.put(key, value);
+              	  System.out.print(key + " ");
+              	  System.out.println(value);
+    	    	  j++;
+    	      } 
+    	  }  catch(ArrayIndexOutOfBoundsException ex) {
+    	    	  JOptionPane.showMessageDialog(null, "Please Set the Score Following Examples!");
+    	    	  return;
+    	  } 
+    	  
+       }
+      else {
+	    	 JOptionPane.showMessageDialog(null, "Please Input the Score Path or Set Score!"); 
+	    	 return;
+	  }
       
+      
+      
+      
+      for (int k=0; k<files.length; k++) {
+    	  Assignment a = new Assignment();
+    	  a.checkAssign(files[k], hsAnswer, wbAnswer, hsRound, hsPoint);
       }
-      FileWriter fw = new FileWriter("report.txt",true); 
-	  fw.write("Your total point for this assignment is "+ total.toString());//appends the string to the file
-	  fw.close();
-      FileOutputStream fileOut=new FileOutputStream("assignment_after.xlsx");
-      wbAssignment.write(fileOut);
-      fileOut.close();
    }
-
    
    public String IntToLetters(int value)
    {
@@ -209,7 +179,7 @@ public class Test
    public Double WriteStringToFile(String cell, Double point, Double total) {  
        try {    
     	   FileWriter fw = new FileWriter("report.txt",true); 
-    	   fw.write("Cell "+ cell + " is wrong, " + point.toString() + "pt is deducted!\n");//appends the string to the file
+    	   fw.write("\n  Cell "+ cell + " is wrong, " + point.toString() + "pt is deducted!");//appends the string to the file
     	   fw.close();
       
        } catch (IOException ioe) {  

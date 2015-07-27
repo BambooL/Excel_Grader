@@ -6,8 +6,13 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
@@ -64,7 +69,7 @@ public class UserInterface extends JFrame {
         scoreField.setPreferredSize(new Dimension(320, 20));
         final JTextField scoreset = new JTextField("Score Set, Example: A1:5, D10:10");
         final JTextField roundset = new JTextField("Rounding, Example: A1:0.01, D10:0.05");
-        JTextField result = new JTextField();
+        final JTextArea result = new JTextArea();
         panel.add(assignbtn, BorderLayout.WEST);
         panel.add(assignField);
         panel.add(answerbtn, BorderLayout.WEST);
@@ -81,6 +86,7 @@ public class UserInterface extends JFrame {
 
         panel.add(scroll);
         panel.setVisible (true);
+        result.setText("Here is the report:\n");
         
         
         
@@ -93,7 +99,7 @@ public class UserInterface extends JFrame {
         		String path = null;
         		
     	        JFileChooser fileChooser = new JFileChooser(".");
-
+    	        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
                 if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//用户点击了确定  
                     path = fileChooser.getSelectedFile().getAbsolutePath();//取得路径选择  
         		assignField.setText(path);
@@ -135,15 +141,22 @@ public class UserInterface extends JFrame {
 
         		String assignPath = assignField.getText();
         		String answerPath = answerField.getText();
-        		String scorePath = answerField.getText();
+        		String scorePath = scoreField.getText();
         		String scoreSet = scoreset.getText();
         		String roundSet = roundset.getText();
         		
         		Test fly = new Test();
         		try {
 					fly.exec(assignPath, answerPath, scorePath, scoreSet, roundSet);
+					printReport(result);
 					
+				    
 					
+				}  catch (FileNotFoundException ex) {
+				    System.out.println("no such file exists");
+				}
+				catch (IOException ex) {
+				    System.out.println("unkownerror");
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -158,6 +171,25 @@ public class UserInterface extends JFrame {
     }
     
 
+    public void printReport(JTextArea result) throws IOException {
+    	File reportFolder = new File("./report/");
+    	File[] files = reportFolder.listFiles();
+    	FileReader fileReader;
+    	for (int n=0; n<files.length; n++) {
+    		fileReader = new FileReader(files[n]);
+    	    BufferedReader bufferedReader = new BufferedReader(fileReader);
+    	    String inputFile = "";
+    	    String textFieldReadable = bufferedReader.readLine();
+
+    	    while (textFieldReadable != null){
+    	        inputFile += textFieldReadable + "\n";
+    	        textFieldReadable = bufferedReader.readLine();                    
+    	    }
+    	    
+    	    result.setText(result.getText()+ inputFile);
+    	}
+    	
+    }
 
 	private void createMenuBar() {
         

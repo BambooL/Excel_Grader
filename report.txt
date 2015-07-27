@@ -1,3 +1,0 @@
-Cell D16 is wrong, 3.0pt is deducted!
-Cell D20 is wrong, 200100.0pt is deducted!
-Your total point for this assignment is -200003.0

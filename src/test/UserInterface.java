@@ -39,14 +39,14 @@ import test.Test;
 
 
 public class UserInterface extends JFrame {
-
+	
 	private JPanel panel;
 	private JTextArea area;
     public UserInterface() {
         
         initUI();
     }
-
+    
     public void initUI() {
     	panel = (JPanel) getContentPane();
     	JScrollPane spane = new JScrollPane();
@@ -71,6 +71,7 @@ public class UserInterface extends JFrame {
         scoreField.setPreferredSize(new Dimension(320, 20));
         final JTextField scoreset = new JTextField("Score Set, Example: A1:5, D10:10");
         final JTextField roundset = new JTextField("Rounding, Example: A1:0.01, D10:0.05");
+//        final JTextField CheckCorrect = new JTextField("CheckBox: C4=200000*E1/(E1+100000)                                        ");
         final JTextArea result = new JTextArea();
         result.setEditable(false);
         panel.add(assignbtn);
@@ -81,6 +82,7 @@ public class UserInterface extends JFrame {
         panel.add(scoreField);
         panel.add(scoreset);
         panel.add(roundset);
+//        panel.add(CheckCorrect);
         panel.add(runbtn); 
         panel.add(result);
         JScrollPane scroller = new JScrollPane(result);
@@ -88,7 +90,7 @@ public class UserInterface extends JFrame {
         scroller.setPreferredSize( new Dimension( 500, 500 ) );
         panel.add(scroller);
         panel.setVisible (true);
-        result.setText("Here is the report:\n");
+
         
         
         
@@ -146,11 +148,19 @@ public class UserInterface extends JFrame {
         		String scorePath = scoreField.getText();
         		String scoreSet = scoreset.getText();
         		String roundSet = roundset.getText();
+        		File reportFolder = new File("./report");
+            	File afterFolder = new File("./after");
+            	File[] files = reportFolder.listFiles();
+            	if (files!=null && files.length!=0) {for (File f: files) f.delete();}
+            	files = afterFolder.listFiles();
+            	if (files!=null && files.length!=0) {for (File f: files) f.delete();}
         		
         		Test fly = new Test();
         		try {
 					fly.exec(assignPath, answerPath, scorePath, scoreSet, roundSet);
 					result.setPreferredSize( new Dimension( 500, 10000 ) );
+			        result.setText(null);
+			        result.setText("Here is the report:\n");
 					printReport(result);
 					
 				    
@@ -267,6 +277,19 @@ public class UserInterface extends JFrame {
         return content;
     }
 
+    public void deleteFolder(File folder) {
+        File[] files = folder.listFiles();
+        if(files!=null) { //some JVMs return null for empty dirs
+            for(File f: files) {
+                if(f.isDirectory()) {
+                    deleteFolder(f);
+                } else {
+                    f.delete();
+                }
+            }
+        }
+        folder.delete();
+    }
     
     public static void main(String[] args) {
         

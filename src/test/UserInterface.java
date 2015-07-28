@@ -27,9 +27,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -50,7 +52,7 @@ public class UserInterface extends JFrame {
     	JScrollPane spane = new JScrollPane();
         spane.getViewport().add(area);
         setTitle("Automatic Grader");
-        setSize(360, 250);
+        setSize(600, 750);
 //        setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -70,21 +72,21 @@ public class UserInterface extends JFrame {
         final JTextField scoreset = new JTextField("Score Set, Example: A1:5, D10:10");
         final JTextField roundset = new JTextField("Rounding, Example: A1:0.01, D10:0.05");
         final JTextArea result = new JTextArea();
-        panel.add(assignbtn, BorderLayout.WEST);
+        result.setEditable(false);
+        panel.add(assignbtn);
         panel.add(assignField);
-        panel.add(answerbtn, BorderLayout.WEST);
+        panel.add(answerbtn);
         panel.add(answerField);
-        panel.add(scorebtn, BorderLayout.WEST);
+        panel.add(scorebtn);
         panel.add(scoreField);
-        panel.add(scoreset, BorderLayout.WEST);
-        panel.add(roundset, BorderLayout.WEST);
-        panel.add(runbtn, BorderLayout.WEST);
-        result.setPreferredSize( new Dimension( 500, 500 ) );
+        panel.add(scoreset);
+        panel.add(roundset);
+        panel.add(runbtn); 
         panel.add(result);
-        JScrollPane scroll = new JScrollPane (result, 
-        		   JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
-        panel.add(scroll);
+        JScrollPane scroller = new JScrollPane(result);
+        scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scroller.setPreferredSize( new Dimension( 500, 500 ) );
+        panel.add(scroller);
         panel.setVisible (true);
         result.setText("Here is the report:\n");
         
@@ -99,7 +101,7 @@ public class UserInterface extends JFrame {
         		String path = null;
         		
     	        JFileChooser fileChooser = new JFileChooser(".");
-    	        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+    	        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//用户点击了确定  
                     path = fileChooser.getSelectedFile().getAbsolutePath();//取得路径选择  
         		assignField.setText(path);
@@ -148,6 +150,7 @@ public class UserInterface extends JFrame {
         		Test fly = new Test();
         		try {
 					fly.exec(assignPath, answerPath, scorePath, scoreSet, roundSet);
+					result.setPreferredSize( new Dimension( 500, 10000 ) );
 					printReport(result);
 					
 				    

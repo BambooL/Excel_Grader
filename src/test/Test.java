@@ -46,26 +46,28 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
       HashMap<String, Cell> hsAnswer = new HashMap<String, Cell>();
       HashMap<String, Double> hsPoint = new HashMap<String, Double>();
       HashMap<String, Double> hsRound = new HashMap<String, Double>();
-      String checkcell;
       Double round;
       // create hashmap for round
       
-      String[] rounds = rounding.trim().split(",");
+      if(!rounding.trim().isEmpty()){
+    	  String[] rounds = rounding.trim().split(",");
+          
+          int i = 0;
+          try {
+    	      while (i < rounds.length && rounds[i] != ""  ) {
+    	    	  String[] item = rounds[i].split(":");
+    	    	  String key = LetterToInt(item[0].trim());
+    	    	  Double value = Double.parseDouble(item[1]);
+    	    	  hsRound.put(key, value);
+    	    	  i++;
+    	      } 
+    	  }  
+          catch(ArrayIndexOutOfBoundsException ex) {
+    	    	  JOptionPane.showMessageDialog(null, "Please Set the Round Following Examples!");
+    	    	  return;
+    	  }
+      }
       
-      int i = 0;
-      try {
-	      while (i < rounds.length && rounds[i] != ""  ) {
-	    	  String[] item = rounds[i].split(":");
-	    	  String key = LetterToInt(item[0].trim());
-	    	  Double value = Double.parseDouble(item[1]);
-	    	  hsRound.put(key, value);
-	    	  i++;
-	      } 
-	  }  
-      catch(ArrayIndexOutOfBoundsException ex) {
-	    	  JOptionPane.showMessageDialog(null, "Please Set the Round Following Examples!");
-	    	  return;
-	  }
       
    // create hashmap for answer
       while (rowIterator1.hasNext()) 

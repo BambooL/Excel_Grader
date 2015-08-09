@@ -65,13 +65,14 @@ public class Assignment {
 	        	 if (hsRound.get(key) != null) {
 	        		 round = hsRound.get(key);
 	        	 }
-	        	 if (cell != null)  assignvalue = getVal(cell, wbAssignment );
-	        	 System.out.println(assignvalue);
+	        	 if (cell != null)  assignvalue = getVal(cell, wbAssignment);
+	        	
 	        	 if (hsAnswer.get(key) != null) answervalue = getVal(hsAnswer.get(key), wbAnswer );
-	        	 System.out.println(answervalue);
+	        	 	        	 
 	        	 id = correct(assignvalue, answervalue, round);
-	        	 System.out.print(key+" ");
-	        	 System.out.print(assignvalue+ " ");
+	        	 System.out.print("key " + key+" ");
+	        	 System.out.print("answer "+answervalue);
+	        	 System.out.print("assign "+ assignvalue+ " ");
 	        	 System.out.print(round+ " ");
 	    		 System.out.println(id);
 		      	 if (id == false){

@@ -27,6 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import test.Assignment;
+import test.UserInterface;
 
 public class Test
 {
@@ -139,6 +140,7 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
       for (int k=0; k<files.length; k++) {
     	  Assignment a = new Assignment();
     	  a.checkAssign(files[k], hsAnswer, wbAnswer, hsRound, hsPoint);
+    	  
       }
    }
    

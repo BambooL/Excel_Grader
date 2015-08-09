@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -36,12 +37,14 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import test.Test;
-
+import test.Execution;
 
 public class UserInterface extends JFrame {
 	
 	private JPanel panel;
 	private JTextArea area;
+
+
     public UserInterface() {
         
         initUI();
@@ -63,6 +66,7 @@ public class UserInterface extends JFrame {
         JButton answerbtn = new JButton("Browse Answer File");
         JButton scorebtn = new JButton("Browse Score Template File");
         JButton runbtn = new JButton("Run");
+        JButton resetbtn = new JButton("Reset");
         final JTextField assignField = new JTextField();
         assignField.setPreferredSize(new Dimension(320, 20));
         final JTextField answerField = new JTextField();
@@ -71,7 +75,7 @@ public class UserInterface extends JFrame {
         scoreField.setPreferredSize(new Dimension(320, 20));
         final JTextField scoreset = new JTextField("Score Set, Example: A1:5, D10:10");
         final JTextField roundset = new JTextField("Rounding, Example: A1:0.01, D10:0.05");
-//        final JTextField CheckCorrect = new JTextField("CheckBox: C4=200000*E1/(E1+100000)                                        ");
+        final JTextField CheckCorrect = new JTextField("CheckBox: C4=200000*E1/(E1+100000)                                        ");
         final JTextArea result = new JTextArea();
         result.setEditable(false);
         panel.add(assignbtn);
@@ -82,8 +86,9 @@ public class UserInterface extends JFrame {
         panel.add(scoreField);
         panel.add(scoreset);
         panel.add(roundset);
-//        panel.add(CheckCorrect);
+        panel.add(CheckCorrect);
         panel.add(runbtn); 
+        panel.add(resetbtn);
         panel.add(result);
         JScrollPane scroller = new JScrollPane(result);
         scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -104,8 +109,8 @@ public class UserInterface extends JFrame {
         		
     	        JFileChooser fileChooser = new JFileChooser(".");
     	        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//用户点击了确定  
-                    path = fileChooser.getSelectedFile().getAbsolutePath();//取得路径选择  
+                if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//Click on Choose 
+                    path = fileChooser.getSelectedFile().getAbsolutePath();//get the path  
         		assignField.setText(path);
         	}
         }
@@ -139,49 +144,57 @@ public class UserInterface extends JFrame {
         }
         });
         
+        final Execution newexec = new Execution(); 
+        final Thread newThread = new Thread(newexec);
+
+        
         runbtn.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-
-        		String assignPath = assignField.getText();
-        		String answerPath = answerField.getText();
-        		String scorePath = scoreField.getText();
-        		String scoreSet = scoreset.getText();
-        		String roundSet = roundset.getText();
-        		File reportFolder = new File("./report");
-            	File afterFolder = new File("./after");
-            	File[] files = reportFolder.listFiles();
-            	if (files!=null && files.length!=0) {for (File f: files) f.delete();}
-            	files = afterFolder.listFiles();
-            	if (files!=null && files.length!=0) {for (File f: files) f.delete();}
+        		newexec._run = true;
+        		newexec.assignPath = assignField.getText();
+        		newexec.answerPath = answerField.getText();
+        		newexec.scorePath = scoreField.getText();
+        		newexec.scoreSet = scoreset.getText();
+        		newexec.roundSet = roundset.getText();
         		
-        		Test fly = new Test();
-        		try {
-					fly.exec(assignPath, answerPath, scorePath, scoreSet, roundSet);
-					result.setPreferredSize( new Dimension( 500, 10000 ) );
-			        result.setText(null);
-			        result.setText("Here is the report:\n");
+        		newThread.start();
+        		    /* Do something. */
+        		
+        			
+        		
+        		
+        		System.out.println(newexec.assignPath);
+    			result.setPreferredSize( new Dimension( 500, 10000 ) );
+    	        result.setText(null);
+    	        result.setText("Here is the report:\n");
+    			try {
 					printReport(result);
-					
-				    
-					
-				}  catch (FileNotFoundException ex) {
-				    System.out.println("no such file exists");
-				}
-				catch (IOException ex) {
-				    System.out.println("unkownerror");
-				} catch (Exception e1) {
+				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-        		
-        		
-        		
-        		
         }
         });
         
-    }
+        resetbtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+
+        		JOptionPane.showMessageDialog(null, "Stop Success!");
+                newThread.interrupt();
+                newexec._run = false;
+                    // Sleep in order to let the interruption handling end before
+                    // exiting the program (else the interruption could be handled
+                    // after the main thread ends!).
+                
+        	}	
+        		
+        
+        });
+
+    
+}
     
 
     public void printReport(JTextArea result) throws IOException {
@@ -302,4 +315,13 @@ public class UserInterface extends JFrame {
             }
         });
     }
+    
 }
+
+
+
+
+
+
+
+

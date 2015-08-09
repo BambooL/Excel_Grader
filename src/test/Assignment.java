@@ -27,6 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFColor;
+import test.UserInterface;
 
 public class Assignment {
 	public void checkAssign(File assign, HashMap<String, Cell> hsAnswer, XSSFWorkbook wbAnswer, HashMap<String, Double> hsRound, HashMap<String, Double> hsPoint ) throws IOException {
@@ -53,9 +54,11 @@ public class Assignment {
 	         while ( cellIterator2.hasNext()) 
 	         {
 	        	 Cell cell = cellIterator2.next();
-	        	 if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+	        	 if (cell.getCellType() == Cell.CELL_TYPE_STRING || cell.getCellType() == Cell.CELL_TYPE_BLANK || cell.getCellType() == Cell.CELL_TYPE_ERROR || cell.getCellType() == Cell.CELL_TYPE_ERROR) {
 	        		 continue;
 	        	 }
+	        	 
+	        	 
 	        	 String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
 	        	 boolean id = false;
 	        	 round = 0.001;
@@ -63,9 +66,9 @@ public class Assignment {
 	        		 round = hsRound.get(key);
 	        	 }
 	        	 if (cell != null)  assignvalue = getVal(cell, wbAssignment );
-	        	 
-	        	 if (hsAnswer.get(key) != null)answervalue = getVal(hsAnswer.get(key), wbAnswer );
-	        	 
+	        	 System.out.println(assignvalue);
+	        	 if (hsAnswer.get(key) != null) answervalue = getVal(hsAnswer.get(key), wbAnswer );
+	        	 System.out.println(answervalue);
 	        	 id = correct(assignvalue, answervalue, round);
 	        	 System.out.print(key+" ");
 	        	 System.out.print(assignvalue+ " ");
@@ -159,7 +162,7 @@ public class Assignment {
 	   
 	   public Double getVal(Cell cell, XSSFWorkbook wb) {
 		   Double result = 0.0;
-		   if (cell.getCellType() == Cell.CELL_TYPE_BLANK || cell.getCellType() == Cell.CELL_TYPE_NUMERIC || cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+		   if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC || cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 			   switch (cell.getCellType()) 
 		       {
 		  	      case Cell.CELL_TYPE_BLANK:

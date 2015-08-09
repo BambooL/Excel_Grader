@@ -1,0 +1,5 @@
+
+ Report for Workbook2.xlsx
+
+  Cell M28 is wrong, 100.0pt is deducted!
+  Cell B228 is wrong, 100.0pt is deducted!

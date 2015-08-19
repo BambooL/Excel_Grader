@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -100,6 +101,7 @@ public class UserInterface extends JFrame {
 	              if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//用户点击了确定  
 	                  path = fileChooser.getSelectedFile().getAbsolutePath();//取得路径选择  
 	      		assignGenField.setText(path);
+	      		
 	      	}
 	      }
 	      });
@@ -118,10 +120,30 @@ public class UserInterface extends JFrame {
 	    }
 	    });
 	  	
+	  	namebtn.addActionListener(new ActionListener() {
+	  		
+	    	@Override
+	    	public void actionPerformed(ActionEvent e) {
+	    		// TODO Auto-generated method stub
+	    		String path = null;
+		        JFileChooser fileChooser = new JFileChooser(".");
+	            if (JFileChooser.APPROVE_OPTION == fileChooser.showOpenDialog(null)) {//用户点击了确定  
+	                path = fileChooser.getSelectedFile().getAbsolutePath();//取得路径选择  
+	    		nameField.setText(path);
+	    	}
+	    }
+	    });
+	  	
 	  	generatebtn.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-        		Generate g = new Generate()
+        		Generate g = new Generate();
+        		try {
+					g.exec(assignGenField.getText(), assignTemField.getText(), nameField.getText());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
         		
         		
         		

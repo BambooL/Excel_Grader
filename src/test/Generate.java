@@ -1,6 +1,9 @@
 package test;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import test.TsvReader;
 
 public class Generate {
 	private String assignGenField;
@@ -12,17 +15,19 @@ public class Generate {
 		nameField = c;
 	}
 	
-	public void exec (String assignGenField, String assignTemField, String nameField) {
+	public void exec (String assignGenField, String assignTemField, String nameField) throws IOException {
 		ArrayList<String> list = new ArrayList<String>();
 		list = makeList(nameField);
+		for (int i=0; i<list.size(); i++) {
+			
+		}
 		
 	}
 	
-	private ArrayList<String> makeList (String nameField) {
+	private ArrayList<String> makeList (String nameField) throws IOException {
 		ArrayList<String> list = new ArrayList<String>();
-		while () {
-			list.append();
-		}
+		TsvReader reader = new TsvReader(nameField);
+		list = reader.getID(nameField);
 		return list;
 	}
 }

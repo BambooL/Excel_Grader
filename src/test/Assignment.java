@@ -27,23 +27,29 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.ss.usermodel.Workbook;
 
 public class Assignment {
 	public void checkAssign(File assign, HashMap<String, Cell> hsAnswer, XSSFWorkbook wbAnswer, HashMap<String, Double> hsRound, HashMap<String, Double> hsPoint ) throws IOException {
 		
 		FileInputStream fIP_assignment = new FileInputStream(assign);
 		XSSFWorkbook wbAssignment = new XSSFWorkbook(fIP_assignment);
+		
 		FormulaEvaluator evaluator_assignment = wbAssignment.getCreationHelper().createFormulaEvaluator();
 		FormulaEvaluator evaluator_answer = wbAnswer.getCreationHelper().createFormulaEvaluator();
 		XSSFSheet spreadsheet_assignment = wbAssignment.getSheetAt(0);
 		Double total = 100.0;
 	    Double assignvalue = 0.0;
 	    Double answervalue = 0.0;
-	    Double round = 0.0001;
+	    Double round = 0.1;
 	    String report = "report/report_" + assign.getName()+".txt";
 	    FileWriter fw = new FileWriter(report,true); 
 		fw.write("\n Report for "+ assign.getName()+"\n");//appends the string to the file
 		fw.close();
+		
+		String name = assign.getName();
+		Boolean isPlagiarism = checkPlagiarism (wbAssignment, name);
+		
 	      // begin comparison
 	      Iterator < Row > rowIterator2 = spreadsheet_assignment.iterator();
 	      while (rowIterator2.hasNext()) 
@@ -58,13 +64,16 @@ public class Assignment {
 	        	 }
 	        	 String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
 	        	 boolean id = false;
-	        	 round = 0.001;
+	        	 round = 0.1;
 	        	 if (hsRound.get(key) != null) {
 	        		 round = hsRound.get(key);
 	        	 }
-	        	 if (cell != null)  assignvalue = getVal(cell, wbAssignment );
-	        	 
-	        	 if (hsAnswer.get(key) != null)answervalue = getVal(hsAnswer.get(key), wbAnswer );
+	        	 if (cell != null)  {
+	        		 assignvalue = getVal(cell, wbAssignment );
+	        	 }
+	        	 if (hsAnswer.get(key) != null) {
+	        		 answervalue = getVal(hsAnswer.get(key), wbAnswer );
+	        	 }
 	        	 
 	        	 id = correct(assignvalue, answervalue, round);
 	        	 System.out.print(key+" ");
@@ -92,8 +101,9 @@ public class Assignment {
 	      
 	      fw = new FileWriter(report,true); 
 		  fw.write("\n Your total point for this assignment is "+ total.toString());//appends the string to the file
+		  fw.write("\n Plagiarism Detected: " + isPlagiarism);
 		  fw.close();
-		  String assignment_after = "after/assignment_after_"+assign.getName()+ ".xlsx";
+		  String assignment_after = "after/assignment_after_"+assign.getName();
 	      FileOutputStream fileOut=new FileOutputStream(assignment_after);
 	      wbAssignment.write(fileOut);
 	      fileOut.close();	
@@ -162,9 +172,9 @@ public class Assignment {
 		   if (cell.getCellType() == Cell.CELL_TYPE_BLANK || cell.getCellType() == Cell.CELL_TYPE_NUMERIC || cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 			   switch (cell.getCellType()) 
 		       {
-		  	      case Cell.CELL_TYPE_BLANK:
-		  	    	result = (double) 21211411;
-		  	      break;
+//		  	      case Cell.CELL_TYPE_BLANK:
+//		  	    	result = (double) 21211411;
+//		  	      break;
 		          case Cell.CELL_TYPE_NUMERIC:
 //		          	System.out.println(cell.getNumericCellValue());
 //		          	System.out.println(hsAnswer.get(key).getNumericCellValue());
@@ -172,13 +182,25 @@ public class Assignment {
 		          break;
 		          case Cell.CELL_TYPE_FORMULA:
 		          	FormulaEvaluator evaluator = wb.getCreationHelper().createFormulaEvaluator();
-		          	CellValue cellValue = evaluator.evaluate(cell);
-		          	result = cellValue.getNumberValue();
+		          	try {
+		          		CellValue cellValue = evaluator.evaluate(cell);
+			          	result = cellValue.getNumberValue();
+		          	} catch(Exception e) {
+		          		result = (double) 21211411;
+		          	}
 		          break;
-		       	  
+		       	  default:
+		       		  result = (double) 21211411;
+		       	  break;
 		       }
 		   }
-		   
+		   result = (double)(Math.round(result*100)/100.0);
 		   return result;
+		  
+	   }
+	   
+	   public Boolean checkPlagiarism (XSSFWorkbook wb, String name) {
+		   String sheetName = wb.getSheetName(wb.getNumberOfSheets()-1) + ".xlsx";
+		   return sheetName.equals(name);
 	   }
 }

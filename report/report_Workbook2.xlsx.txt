@@ -1,5 +1,0 @@
-
- Report for Workbook2.xlsx
-
-  Cell M28 is wrong, 100.0pt is deducted!
- Your total point for this assignment is 0.0

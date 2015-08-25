@@ -1,0 +1,4 @@
+
+ Report for AGW5093.xlsx
+
+  Cell M50 is wrong, 100.0pt is deducted!

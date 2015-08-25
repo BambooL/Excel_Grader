@@ -137,21 +137,32 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
       
       
       for (int k=0; k<files.length; k++) {
-    	  Assignment a = new Assignment();
-    	  a.checkAssign(files[k], hsAnswer, wbAnswer, hsRound, hsPoint);
+    	  System.out.println( 	  	getFileExtension(files[k]).trim() );
+    	  if (getFileExtension(files[k]).trim().equalsIgnoreCase("xlsx")) {
+    		  System.out.println(files[k].getName());
+        	  Assignment a = new Assignment();
+        	  a.checkAssign(files[k], hsAnswer, wbAnswer, hsRound, hsPoint);  
+    	  }
+
       }
    }
+
+    private static String getFileExtension(File file) {
+	    String fileName = file.getName();
+	    if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+	    return fileName.substring(fileName.lastIndexOf(".")+1);
+	    else return "";
+	}
    
-   public String IntToLetters(int value)
-   {
-       String result = new String();
-       while (--value >= 0)
-       {
-           result = (char)('A' + value % 26 +1) + result;
-           value /= 26;
-       }
-       return result ;
-   }
+	public String IntToLetters(int value) {
+	       String result = new String();
+	       while (--value >= 0)
+	       {
+	           result = (char)('A' + value % 26 +1) + result;
+	           value /= 26;
+	       }
+	       return result ;
+    }
    
    public String LetterToInt(String value) {
 	   value = value.toUpperCase();

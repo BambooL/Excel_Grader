@@ -1,8 +1,7 @@
 
  Report for AGW5093.xlsx
 
-  Cell J7 is wrong, 20.0pt is deducted!
   Cell M34 is wrong, 20.0pt is deducted!
   Cell M41 is wrong, 20.0pt is deducted!
- Your total point for this assignment is 40.0
+ Your total point for this assignment is 60.0
  Plagiarism Detected: true

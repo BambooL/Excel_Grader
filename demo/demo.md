@@ -1,9 +1,9 @@
 # Generation
 ## Preparation
 ### Get a Assignment sample and Set **Track Change**;
-![image](14.png)
+![image](18.png)
 ### Download the roster from Angel;
-![image](15.png)
+![image](19.png)
 ### Create a Folder 'Assignment';
 ## Run Excel Generator
 ### Choose the Assignment Template, Assignment Folder

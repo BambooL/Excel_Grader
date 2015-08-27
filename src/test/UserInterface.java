@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -57,12 +58,12 @@ public class UserInterface extends JFrame {
     	
     	JTabbedPane tabbedPane = new JTabbedPane();
     	JComponent panel1 = makeTextPanel("");
-    	tabbedPane.addTab("Tab 1", null, panel1,
+    	tabbedPane.addTab("Generate", null, panel1,
                 "Does nothing");
     	tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
          
         JComponent panel2 = makeTextPanel("");
-        tabbedPane.addTab("Tab 2", null, panel2,
+        tabbedPane.addTab("Grade", null, panel2,
                 "Does twice as much nothing");
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
         
@@ -175,9 +176,10 @@ public class UserInterface extends JFrame {
         final JTextField scoreField = new JTextField();
         scoreField.setPreferredSize(new Dimension(320, 20));
         final JTextField scoreset = new JTextField("Score Set, Example: A1:5, D10:10");
-        scoreset.setPreferredSize(new Dimension(200, 20));
+        scoreset.setPreferredSize(new Dimension(550, 20));
         final JTextField roundset = new JTextField("Rounding, Example: A1:0.01, D10:0.05");
-        roundset.setPreferredSize(new Dimension(200, 20));
+        roundset.setPreferredSize(new Dimension(470, 20));
+        final JCheckBox chkG = new JCheckBox("Grade Only");
         final JTextArea result = new JTextArea();
         result.setEditable(false);
         panel2.add(assignbtn);
@@ -188,6 +190,7 @@ public class UserInterface extends JFrame {
         panel2.add(scoreField);
         panel2.add(scoreset);
         panel2.add(roundset);
+//        panel2.add(chkG);
         panel2.add(runbtn); 
         panel2.add(result);
         JScrollPane scroller = new JScrollPane(result);
@@ -258,10 +261,10 @@ public class UserInterface extends JFrame {
         		String scorePath = scoreField.getText();
         		String scoreSet = scoreset.getText();
         		String roundSet = roundset.getText();
-        		
         		Test fly = new Test();
         		try {
         			
+        		
 					fly.exec(assignPath, answerPath, scorePath, scoreSet, roundSet);
 					result.setPreferredSize( new Dimension( 500, 10000 ) );
 					printReport(result);

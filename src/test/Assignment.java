@@ -59,10 +59,10 @@ public class Assignment {
 	         while ( cellIterator2.hasNext()) 
 	         {
 	        	 Cell cell = cellIterator2.next();
-	        	 if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+	        	 if (cell.getCellType() == Cell.CELL_TYPE_STRING || cell.getCellType() == Cell.CELL_TYPE_BLANK || cell.getCellType() == Cell.CELL_TYPE_ERROR ) {
 	        		 continue;
 	        	 }
-	        	 String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
+	             String key = IntToLetters(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex()+1);
 	        	 boolean id = false;
 	        	 round = 0.1;
 	        	 if (hsRound.get(key) != null) {
@@ -72,21 +72,27 @@ public class Assignment {
 	        		 assignvalue = getVal(cell, wbAssignment );
 	        	 }
 	        	 if (hsAnswer.get(key) != null) {
+	        		 
 	        		 answervalue = getVal(hsAnswer.get(key), wbAnswer );
 	        	 }
 	        	 
 	        	 id = correct(assignvalue, answervalue, round);
-	        	 System.out.print(key+" ");
-	        	 System.out.print(assignvalue+ " ");
-	        	 System.out.print(round+ " ");
-	    		 System.out.println(id);
+	        	 
 		      	 if (id == false){
+		      		 
+		      		 System.out.print(key+" ");
+		      		 System.out.print(cell + " ");
+		        	 System.out.print(assignvalue+ " ");
+		        	 System.out.print(hsAnswer.get(key)+ " ");
+		        	 System.out.print(answervalue+ " ");
+		        	 System.out.print(round+ " ");
+		    		 System.out.println(id);
 		
-		      		 String column = IntToLetters(cell.getColumnIndex());
-		      		 String index = column + Integer.toString(cell.getRowIndex()+1);
-		      		 if (hsPoint.get(key) != null) {
+//		      		 String column = IntToLetters(cell.getColumnIndex());
+//		      		 String index = column + Integer.toString(cell.getRowIndex()+1);
+		      		 if (hsPoint.containsKey(key)) {
 		      			Double point = hsPoint.get(key);
-		      			total = WriteStringToFile(index, point, total, assign);
+		      			total = WriteStringToFile(key, point, total, assign);
 		      		 }
 		      		 XSSFCellStyle style = wbAssignment.createCellStyle();
 		      		 style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
@@ -169,7 +175,7 @@ public class Assignment {
 	   
 	   public Double getVal(Cell cell, XSSFWorkbook wb) {
 		   Double result = 0.0;
-		   if (cell.getCellType() == Cell.CELL_TYPE_BLANK || cell.getCellType() == Cell.CELL_TYPE_NUMERIC || cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+		   if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC || cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
 			   switch (cell.getCellType()) 
 		       {
 //		  	      case Cell.CELL_TYPE_BLANK:

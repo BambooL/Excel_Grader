@@ -56,7 +56,7 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
           try {
     	      while (i < rounds.length && rounds[i] != ""  ) {
     	    	  String[] item = rounds[i].split(":");
-    	    	  String key = LetterToInt(item[0].trim());
+    	    	  String key = item[0].trim();
     	    	  Double value = Double.parseDouble(item[1]);
     	    	  hsRound.put(key, value);
     	    	  i++;
@@ -77,11 +77,12 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
          while ( cellIterator1.hasNext() ) 
          {
             Cell cell = cellIterator1.next();
-            String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
+            
+            String key = IntToLetters(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex()+1);
             hsAnswer.put(key, cell);
-           
          }
       }
+ 
       
       // create hashmap for point
       if (!scorePath.trim().isEmpty()) {
@@ -98,11 +99,11 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
              while ( cellIterator3.hasNext() ) 
              {
                 Cell cell = cellIterator3.next();
-                String key = Integer.toString(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex());
+                String key = IntToLetters(cell.getColumnIndex()) + Integer.toString(cell.getRowIndex()+1);
                 if (cell.getCellType() == CELL_TYPE_NUMERIC){
                 	hsPoint.put(key, cell.getNumericCellValue());
-                	System.out.print(key + " ");
-                	System.out.println(cell.getNumericCellValue());
+//                	System.out.print(key + " ");
+//                	System.out.println(cell.getNumericCellValue());
                 }
                 
              }
@@ -115,11 +116,11 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
           try {
     	      while (j < scores.length && scores[j] != ""  ) {
     	    	  String[] item = scores[j].split(":");
-    	    	  String key = LetterToInt(item[0].trim());
+    	    	  String key = item[0].trim();
     	    	  Double value = Double.parseDouble(item[1]);
     	    	  hsPoint.put(key, value);
-              	  System.out.print(key + " ");
-              	  System.out.println(value);
+//              	  System.out.print(key + " ");
+//              	  System.out.println(value);
     	    	  j++;
     	      } 
     	  }  catch(ArrayIndexOutOfBoundsException ex) {
@@ -132,6 +133,14 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
 	    	 JOptionPane.showMessageDialog(null, "Please Input the Score Path or Set Score!"); 
 	    	 return;
 	  }
+      
+      
+//    for (String key : hsPoint.keySet()) {  
+//  	  
+//  	    System.out.println("Key = " + key); 
+//  	    System.out.println("Value= " + hsPoint.get(key));
+//  	  
+//  	} 
       
       
       
@@ -147,6 +156,7 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
       }
    }
 
+	
     private static String getFileExtension(File file) {
 	    String fileName = file.getName();
 	    if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
@@ -235,7 +245,7 @@ public void exec(String assignsPath, String answerPath, String scorePath, String
 	   return result;
    }
 		 
-
+   
   		 
    
 
